@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surpresa!</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(to bottom, #b9292e, #fad0c4);
+            text-align: center;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            margin-top: 50px;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        }
+
+        button {
+            background: #ff4b5c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #ff1e40;
+            transform: scale(1.05);
+        }
+
+        #telaInicial { margin-top: 100px; }
+
+        /* Caixa de presente */
+        #caixaPresente {
+            display: none;
+            margin-top: 100px;
+            position: relative;
+            height: 200px;
+        }
+
+        .presente {
+            width: 150px;
+            height: 150px;
+            background: #ff4b5c;
+            margin: auto;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .tampa {
+            width: 170px;
+            height: 40px;
+            background: #ff6f7d;
+            position: absolute;
+            top: -40px;
+            left: -10px;
+            border-radius: 5px;
+            transition: transform 0.5s ease;
+            transform-origin: bottom center;
+        }
+
+        .fotos {
+            display: none;
+            margin-top: 30px;
+            position: relative;
+            height: 350px;
+        }
+
+        .fotos img {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 15px;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 1s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .mensagens {
+            display: none;
+            margin-top: 40px;
+            font-size: 1.5em;
+            font-style: italic;
+            min-height: 80px;
+        }
+
+        .surpresa {
+            display: none;
+            margin-top: 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ff4b5c;
+            background: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .heart {
+            position: fixed;
+            color: rgba(255,255,255,0.8);
+            font-size: 20px;
+            animation: fall 5s linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela inicial -->
+    <div id="telaInicial">
+        <button onclick="mostrarCaixa()">Botão nada suspeito 👀</button>
+    </div>
+
+    <!-- Caixa de presente -->
+    <div id="caixaPresente">
+        <h1>Abre o presente gatinha! 🎁</h1>
+        <div class="presente" onclick="abrirPresente()">
+            <div class="tampa"></div>
+        </div>
+    </div>
+
+    <!-- Áudio de abertura -->
+    <audio id="somPresente" src="plim.mp3"></audio>
+
+    <!-- Galeria de Fotos -->
+    <div class="fotos" id="galeria">
+        <img src="foto1.jpg" alt="Nós dois">
+        <img src="foto2.jpg" alt="Momentos felizes">
+        <img src="foto3.jpg" alt="Outro momento">
+        <img src="foto5.jpg" alt="Nós juntos">
+        <img src="foto6.jpg" alt="Nós juntos">
+        <img src="foto7.jpg" alt="Nós juntos">
+        <img src="foto8.jpg" alt="Nós juntos">
+        <img src="foto9.jpg" alt="Nós juntos">
+        <img src="foto10.jpg" alt="Nós juntos">
+        <img src="foto11.jpg" alt="Nós juntos">
+        <img src="foto12.jpg" alt="Nós juntos">
+        <img src="foto13.jpg" alt="Nós juntos">
+        <img src="foto14.jpg" alt="Nós juntos">
+        <img src="foto15.jpg" alt="Nós juntos">
+        <img src="foto16.jpg" alt="Nós juntos">
+        <img src="foto17.jpg" alt="Nós juntos">
+    </div>
+
+    <!-- Mensagens -->
+    <div class="mensagens" id="frases">
+        <p id="texto"></p>
+        <button onclick="proximaMensagem()">Próxima mensagem</button>
+    </div>
+
+    <script>
+        const frases = [
+            "Feliz aniversário minha princesa!🥳💝",
+            "Espero passar muitos outros aninhos de vida ao seu lado!✨",
+            "Nós amamos você demais!🦊🐕💓",
+            "Nunca se esqueça que eu te amo muito!❤️",
+            "Você é a melhor coisa que poderia ter me acontencido💕",
+            "Obrigado por ser a pessoa mais amorosa e incrível que tive a sorte de conhecer🫶💞",
+            "Espero poder viver muitos outros momentos incríveis ao seu lado!🌟",
+            "Eu te amo agora e para sempre!💖",
+        ];
+
+        let index = 0;
+        let intervaloFotos;
+        const fotos = document.querySelectorAll(".fotos img");
+
+        function mostrarCaixa() {
+            document.getElementById("telaInicial").style.display = "none";
+            document.getElementById("caixaPresente").style.display = "block";
+        }
+
+        function abrirPresente() {
+            document.querySelector(".tampa").style.transform = "rotateX(150deg)";
+            document.getElementById("somPresente").play(); // TOCA O SOM
+            setTimeout(() => {
+                document.getElementById("galeria").style.display = "block";
+                iniciarGaleria();
+            }, 1000);
+        }
+
+        function iniciarGaleria() {
+            let i = 0;
+            fotos[i].style.opacity = 1;
+
+            intervaloFotos = setInterval(() => {
+                fotos[i].style.opacity = 0;
+                i = (i + 1) % fotos.length;
+                fotos[i].style.opacity = 1;
+            }, 2000);
+
+            setTimeout(() => {
+                mostrarMensagens();
+            }, 8000);
+        }
+
+        function mostrarMensagens() {
+            document.getElementById("frases").style.display = "block";
+            escreverTexto(frases[index]);
+        }
+
+        function proximaMensagem() {
+            index++;
+            if (index < frases.length) {
+                escreverTexto(frases[index]);
+            } else {
+                document.getElementById("frases").style.display = "none";
+            }
+        }
+
+        function escreverTexto(texto) {
+            let i = 0;
+            document.getElementById("texto").innerHTML = "";
+            const intervalo = setInterval(() => {
+            let char = texto.charAt(i) === "\n" ? "<br>" : texto.charAt(i);
+            document.getElementById("texto").innerHTML += char;
+            i++;
+            if (i > texto.length) clearInterval(intervalo);
+        }, 50);
+        }
+
+
+        function criarCoracao() {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+            heart.innerHTML = "❤️";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(criarCoracao, 300);
+    </script>
+</body>
+</html>
